@@ -1,70 +1,111 @@
-# Getting Started with Create React App
+# Bienvenue dans le KATA Github Actions de la Automation Tester Academy
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Il s'agit d'un projet simple basé sur JS et Node.
 
-## Available Scripts
+Le fichier `app.js` expose 2 méthodes (`add` et `sub`)  que nous pouvons tester grâce aux fichiers contenu dans le dossier `test`.
+Les tests utilises MOCHA et se composent de 2 suites : `test_add` et `test_sub`
 
-In the project directory, you can run:
+## Lancer les tests
 
-### `npm start`
+Pour lancer les tests il suffit de jouer les commandes 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```javascript
+npm run test_add // pour lancer les tests sur add
+np run test_sub // pour lancer les tests sur sub
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Énoncé du KATA
 
-### `npm test`
+### Etape 1 :
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Cloner le dépôt.**
 
-### `npm run build`
+Pour ce Kata tu peux aussi bien utiliser ton IDE avec le dépôt en local comme effectuer toutes les étapes depuis l'interface Github. As you wish !
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Etape 2 :
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Créer un fichier de workflow appelé "test_and_deploy"**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Je te laisse te rappeler où le mettre et quelle extension il doit avoir pour être un workflow valide. 😅
 
-### `npm run eject`
+### Etape 3 :
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Ecrire le workflow suivant :**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Déclenchement sur des push, mais aussi manuel
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Pour l'action manuelle on a besoin de demander à l'utilisateur s'il souhaite
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  - jouer un déploiement (valeur par défaut)
 
-## Learn More
+  - jouer les test add
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  - jouer les test sub
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  - jouer tous les tests
 
-### Code Splitting
+- Tous les jobs jouent sur ubuntu
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- On va avoir besoin de 4 jobs
 
-### Analyzing the Bundle Size
+  - test_add
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+  - test_sub
 
-### Making a Progressive Web App
+  - deploy
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+  - notify_failure
 
-### Advanced Configuration
+- Les jobs test_add et test_sub doivent chacun
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+  - effectuer un checkout du dépôt
 
-### Deployment
+  - faire un setup de node (tu trouveras de l'aide en annexe) en version 16
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+  - faire un setup de la ci (npm ci)
 
-### `npm run build` fails to minify
+- Le job test_add
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  - Joue les tests add : npm run test_add
+
+  - Les conditions de déclenchements sont les suivantes :
+
+    - L'utilisateur a demandé à jouer les test add
+
+    - L'utilisateur a demandé à jouer tous les tests
+
+    - L'utilisateur a demandé à jouer un déploiement
+
+    - L'utilisateur a fait un push sur le dépôt
+
+- Le job test_sub
+
+  - Joue les tests add : npm run test_sub
+
+  - Les conditions de déclenchements sont les suivantes :
+
+    - L'utilisateur a demandé à jouer les test sub
+
+    - L'utilisateur a demandé à jouer tous les tests
+
+    - L'utilisateur a demandé à jouer un déploiement
+
+    - L'utilisateur a fait un push sur le dépôt
+
+- Le job deploy
+
+  - Imprime le texte "déploiement"
+
+  - Joue après le succès de test_add et test_sub
+
+  - Ne joue que si l'utilisateur a demandé à jouer un déploiement
+
+- Le job notify_failure
+
+  - Imprime le texte "Le déploiement a échoué"
+
+  - Joue si test_add, test_sub, ou deploy ont échoué
+
+---
+
+🤫 La solution est sur la branche `solution`... Mais c'est mieux de s'en passer...
