@@ -1,0 +1,57 @@
+name: test and deploy
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Que souhaitez vous faire ?"
+        required: true
+        type: choice
+        options:
+          - déploiement
+          - test add
+          - test sub
+          - test all
+        default: "déploiement"
+
+jobs:
+  test_add:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 16
+      - name: setup ci
+        run: npm ci
+      - name: test
+        run: npm run test_add
+
+  test_sub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with: 
+          node-version: 16
+      - name: setup ci
+        run: npm ci
+      - name: test
+        run: npm run test_sub
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        run: echo "déploiement"
+
+  notify_failure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: notify_failure
+        run: echo "Echec du déploiement"
